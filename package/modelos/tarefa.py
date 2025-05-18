@@ -1,14 +1,12 @@
-from package.modelos.base_modelo import BaseModel
+import uuid
 
-class Tarefa(BaseModel):
-    def __init__(self, nome, descricao, frequencia = 'semanal'):
-        super().__init__()
+class Tarefa:
+    def __init__(self, nome, id=None):
+        self.id = id or str(uuid.uuid4())  # Gera id único se não fornecido
         self.nome = nome
-        self.descricao = descricao
-        self.frequencia = frequencia
         self.concluida = False
-        self.responsavel_id = None #associada ao morador (associacao fraca)
-    
+        self.responsavel_id = None
+
     def marcar_concluida(self):
         self.concluida = True
 
@@ -22,17 +20,13 @@ class Tarefa(BaseModel):
         return {
             "id": self.id,
             "nome": self.nome,
-            "descricao": self.descricao,
-            "frequencia": self.frequencia,
             "concluida": self.concluida,
             "responsavel_id": self.responsavel_id
         }
     
     @classmethod
     def from_dict(cls, data):
-        t = Tarefa(data["nome"], data["descricao"], data.get("frequencia", "semanal"))
-        t._id = data["id"]
-        t.concluida = data["concluida"]
-        t.responsavel_id = data["responsavel_id"]
+        t = cls(data["nome"], id=data.get("id"))
+        t.concluida = data.get("concluida", False)
+        t.responsavel_id = data.get("responsavel_id")
         return t
-    

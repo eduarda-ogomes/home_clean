@@ -1,1 +1,27 @@
-{}
+{
+    "moradores": [
+        {
+            "id": "1416d310-53d3-4c81-9779-ee72619c8846",
+            "nome": "duda"
+        },
+        {
+            "id": "f78279ce-8552-4b42-a857-5103207402aa",
+            "nome": "julia"
+        }
+    ],
+    "tarefas": [
+        {
+            "id": "1bef03ed-e069-4c0f-acc6-7bc3da9c553c",
+            "nome": "cozinha",
+            "concluida": false,
+            "responsavel_id": null
+        },
+        {
+            "id": "871215de-e3a8-4f08-9c7b-779dd28a5ed2",
+            "nome": "sala",
+            "concluida": false,
+            "responsavel_id": null
+        }
+    ],
+    "data_ultima_distribuicao": "2025-05-18T13:06:07.492084"
+}

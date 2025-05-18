@@ -1,8 +1,5 @@
-from package.view.app import HomeCleanApp
-
-def main():
-    app = HomeCleanApp()
-    app.mainloop()
+from interface import App
 
 if __name__ == "__main__":
-    main()
+    app = App()
+    app.mainloop()
