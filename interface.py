@@ -15,6 +15,11 @@ class App(ctk.CTk):
 
         self.moradores = []
         self.tarefas = []
+        self.data_ultima_distribuicao = None
+
+        # Inicializa comboboxes antes de usá-los
+        self.combo_tarefas = None
+        self.combo_moradores_para_atribuir = None
 
         self.carregar_dados()
 
@@ -29,8 +34,10 @@ class App(ctk.CTk):
         self.construir_aba_tarefas()
         self.construir_aba_agenda()
 
-        self.data_ultima_distribuicao = None
-        self.carregar_dados()
+        self.atualizar_lista_moradores()
+        self.atualizar_lista_tarefas()
+        self.atualizar_agenda()
+
         self.verificar_e_atualizar_distribuicao()
 
     def carregar_dados(self):
@@ -64,16 +71,13 @@ class App(ctk.CTk):
 
     def distribuir_tarefas_rotativa(self):
         if not self.moradores:
-            return  # Sem moradores, nada a fazer
+            return
 
         moradores_ids = [m.id for m in self.moradores]
-        total_moradores = len(moradores_ids)
 
-        # Primeiro, limpa todas as atribuições para garantir exclusividade
         for tarefa in self.tarefas:
             tarefa.responsavel_id = None
 
-        # Atribui uma tarefa para cada morador, na ordem das listas
         for i, morador_id in enumerate(moradores_ids):
             if i < len(self.tarefas):
                 self.tarefas[i].responsavel_id = morador_id
@@ -88,8 +92,6 @@ class App(ctk.CTk):
         self.nome_morador_entry.pack()
         ctk.CTkButton(self.aba_moradores, text="Adicionar Morador", command=self.adicionar_morador).pack(pady=5)
 
-        self.atualizar_lista_moradores()
-
     def construir_aba_tarefas(self):
         self.lista_tarefas = ctk.CTkScrollableFrame(self.aba_tarefas)
         self.lista_tarefas.pack(fill="both", expand=True, pady=10)
@@ -99,16 +101,13 @@ class App(ctk.CTk):
 
         ctk.CTkButton(self.aba_tarefas, text="Adicionar Tarefa", command=self.adicionar_tarefa).pack(pady=5)
 
-        # Combobox para atribuir tarefa a morador
         self.combo_tarefas = ctk.CTkComboBox(self.aba_tarefas, values=[t.nome for t in self.tarefas])
-        self.combo_tarefas.pack(pady=(20, 5))
+        self.combo_tarefas.pack(pady=(20,5))
 
         self.combo_moradores_para_atribuir = ctk.CTkComboBox(self.aba_tarefas, values=[m.nome for m in self.moradores])
         self.combo_moradores_para_atribuir.pack(pady=5)
 
         ctk.CTkButton(self.aba_tarefas, text="Atribuir Tarefa", command=self.atribuir_tarefa).pack(pady=5)
-
-        self.atualizar_lista_tarefas()
 
     def construir_aba_agenda(self):
         self.lista_agenda = ctk.CTkScrollableFrame(self.aba_agenda)
@@ -116,7 +115,7 @@ class App(ctk.CTk):
 
         hoje = datetime.now().date()
         inicio_semana = hoje - timedelta(days=hoje.weekday())
-        fim_semana = inicio_semana + timedelta(days=6)         # domingo
+        fim_semana = inicio_semana + timedelta(days=6)
 
         texto_semana = f"Semana atual: {inicio_semana.strftime('%d/%m/%Y')} — {fim_semana.strftime('%d/%m/%Y')}"
         self.label_semana = ctk.CTkLabel(self.aba_agenda, text=texto_semana, font=ctk.CTkFont(size=14, weight="bold"))
@@ -124,8 +123,6 @@ class App(ctk.CTk):
 
         ctk.CTkButton(self.aba_agenda, text="Redistribuir Tarefas", command=self.botao_redistribuir).pack(pady=5)
 
-        self.atualizar_agenda()
-    
     def botao_redistribuir(self):
         self.distribuir_tarefas_rotativa()
         self.salvar_dados()
@@ -141,8 +138,7 @@ class App(ctk.CTk):
             ctk.CTkLabel(frame, text=m.nome).pack(side="left")
             ctk.CTkButton(frame, text="Remover", command=lambda m=m: self.remover_morador(m)).pack(side="right")
 
-        # Atualiza combobox de moradores para atribuir tarefas
-        if hasattr(self, "combo_moradores_para_atribuir"):
+        if self.combo_moradores_para_atribuir:
             self.combo_moradores_para_atribuir.configure(values=[m.nome for m in self.moradores])
 
     def atualizar_lista_tarefas(self):
@@ -154,17 +150,23 @@ class App(ctk.CTk):
             ctk.CTkLabel(frame, text=t.nome).pack(side="left")
             ctk.CTkButton(frame, text="Remover", command=lambda t=t: self.remover_tarefa(t)).pack(side="right")
 
-        # Atualiza combobox de tarefas para atribuir
-        if hasattr(self, "combo_tarefas"):
+        if self.combo_tarefas:
             self.combo_tarefas.configure(values=[t.nome for t in self.tarefas])
 
     def atualizar_agenda(self):
+        # Limpa agenda
         for widget in self.lista_agenda.winfo_children():
             widget.destroy()
+
+        self.vars_tarefas = {}  # limpa dicionário
+
         for t in self.tarefas:
             frame = ctk.CTkFrame(self.lista_agenda)
             frame.pack(fill="x", pady=2, padx=5)
+
             var = ctk.BooleanVar(value=t.concluida)
+            self.vars_tarefas[t.id] = var  # guarda referência
+
             checkbox = ctk.CTkCheckBox(
                 frame,
                 text=f"{t.nome} - {self.buscar_nome_morador(t.responsavel_id) or 'Sem responsável'}",
@@ -179,38 +181,42 @@ class App(ctk.CTk):
                 return m.nome
         return None
 
+    # **Métodos que estavam faltando e geram o erro**
+
     def adicionar_morador(self):
         nome = self.nome_morador_entry.get().strip()
         if nome:
             self.moradores.append(Morador(nome))
             self.nome_morador_entry.delete(0, "end")
-            self.distribuir_tarefas_rotativa()  # Redistribui as tarefas com o morador novo
+            self.distribuir_tarefas_rotativa()
             self.salvar_dados()
             self.atualizar_lista_moradores()
             self.atualizar_lista_tarefas()
             self.atualizar_agenda()
 
-
     def adicionar_tarefa(self):
         nome = self.nome_tarefa_entry.get().strip()
         if nome:
-            nova_tarefa = Tarefa(nome)
-            # Atribuir responsável automaticamente se existirem moradores
-            if self.moradores:
-                # Exemplo: atribui ao morador com menos tarefas atualmente
-                morador_com_menos_tarefas = min(
-                    self.moradores,
-                    key=lambda m: sum(1 for t in self.tarefas if t.responsavel_id == m.id)
-                )
-                nova_tarefa.responsavel_id = morador_com_menos_tarefas.id
-        self.tarefas.append(nova_tarefa)
-        self.nome_tarefa_entry.delete(0, "end")
-        self.salvar_dados()
-        self.atualizar_lista_tarefas()
-        self.atualizar_agenda()
+            self.tarefas.append(Tarefa(nome))
+            self.nome_tarefa_entry.delete(0, "end")
+            self.distribuir_tarefas_rotativa()
+            self.salvar_dados()
+            self.atualizar_lista_tarefas()
+            self.atualizar_agenda()
 
+    def atribuir_tarefa(self):
+        nome_tarefa = self.combo_tarefas.get()
+        nome_morador = self.combo_moradores_para_atribuir.get()
+        tarefa = next((t for t in self.tarefas if t.nome == nome_tarefa), None)
+        morador = next((m for m in self.moradores if m.nome == nome_morador), None)
+        if tarefa and morador:
+            tarefa.responsavel_id = morador.id
+            self.salvar_dados()
+            self.atualizar_lista_tarefas()
+            self.atualizar_agenda()
 
     def remover_morador(self, morador):
+        # Remove morador e retira dele as tarefas atribuídas
         self.moradores.remove(morador)
         for t in self.tarefas:
             if t.responsavel_id == morador.id:
@@ -229,20 +235,4 @@ class App(ctk.CTk):
     def marcar_tarefa(self, var, tarefa):
         tarefa.concluida = var.get()
         self.salvar_dados()
-
-    def atribuir_tarefa(self):
-        nome_tarefa = self.combo_tarefas.get()
-        nome_morador = self.combo_moradores_para_atribuir.get()
-
-        if not nome_tarefa or not nome_morador:
-            return  # Se quiser, aqui pode mostrar mensagem de aviso
-
-        tarefa = next((t for t in self.tarefas if t.nome == nome_tarefa), None)
-        morador = next((m for m in self.moradores if m.nome == nome_morador), None)
-
-        if tarefa and morador:
-            tarefa.responsavel_id = morador.id
-            morador.adicionar_tarefa(tarefa)
-            self.salvar_dados()
-            self.atualizar_lista_tarefas()
-            self.atualizar_agenda()
+        self.atualizar_agenda()

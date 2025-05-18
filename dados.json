@@ -1,47 +1,18 @@
 {
     "moradores": [
         {
-            "id": "08e63ff2-69a3-440d-8e84-4c30a802cc1e",
-            "nome": "duda"
-        },
-        {
-            "id": "0bdd06b3-1d6c-4c23-97f4-34b2b2e7fec3",
-            "nome": "julia"
-        },
-        {
-            "id": "59d9cc24-6cf1-406b-a420-7545efc82e72",
-            "nome": "ana"
-        },
-        {
-            "id": "fea7271f-fac6-4bcb-9758-926627b3ee5e",
-            "nome": "carlos"
+            "id": "7cc73b24-04a8-4423-8394-5de341fa828a",
+            "nome": "ma",
+            "tarefas_ids": []
         }
     ],
     "tarefas": [
         {
-            "id": "192544a4-278f-4658-9556-3de20024ed8d",
-            "nome": "cozinha",
-            "concluida": false,
-            "responsavel_id": "08e63ff2-69a3-440d-8e84-4c30a802cc1e"
-        },
-        {
-            "id": "23418497-a78d-4802-8c74-a4de4f2c6240",
+            "id": "2b6f974f-2be2-4b40-9f3e-6b8706f4cab9",
             "nome": "sala",
-            "concluida": false,
-            "responsavel_id": "0bdd06b3-1d6c-4c23-97f4-34b2b2e7fec3"
-        },
-        {
-            "id": "be1eb8c2-48fa-4948-86b4-dcaaae8fa85e",
-            "nome": "banheiro",
-            "concluida": false,
-            "responsavel_id": "59d9cc24-6cf1-406b-a420-7545efc82e72"
-        },
-        {
-            "id": "0bf60225-a337-4263-831b-296ea02abde1",
-            "nome": "sala de cima",
-            "concluida": false,
-            "responsavel_id": "fea7271f-fac6-4bcb-9758-926627b3ee5e"
+            "concluida": true,
+            "responsavel_id": "7cc73b24-04a8-4423-8394-5de341fa828a"
         }
     ],
-    "data_ultima_distribuicao": "2025-05-18T13:12:22.733397"
+    "data_ultima_distribuicao": "2025-05-18T15:19:03.261037"
 }

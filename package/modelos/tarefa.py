@@ -1,32 +1,46 @@
+from package.modelos.mixins import ConcluivelMixin, AtribuivelMixin
 import uuid
 
-class Tarefa:
+class Tarefa(ConcluivelMixin, AtribuivelMixin):
     def __init__(self, nome, id=None):
-        self.id = id or str(uuid.uuid4())  # Gera id único se não fornecido
-        self.nome = nome
-        self.concluida = False
-        self.responsavel_id = None
+        ConcluivelMixin.__init__(self)
+        AtribuivelMixin.__init__(self)
+        self._id = id or str(uuid.uuid4())
+        self._nome = nome
 
-    def marcar_concluida(self):
-        self.concluida = True
+    @property
+    def id(self):
+        return self._id
 
-    def marcar_pendente(self):
-        self.concluida = False
+    @property
+    def nome(self):
+        return self._nome
 
-    def atribuir_a(self, morador_id: str):
-        self.responsavel_id = morador_id
+    @nome.setter
+    def nome(self, valor):
+        if valor:
+            self._nome = valor
 
     def to_dict(self):
         return {
-            "id": self.id,
-            "nome": self.nome,
+            "id": self._id,
+            "nome": self._nome,
             "concluida": self.concluida,
             "responsavel_id": self.responsavel_id
         }
-    
+
     @classmethod
     def from_dict(cls, data):
-        t = cls(data["nome"], id=data.get("id"))
-        t.concluida = data.get("concluida", False)
-        t.responsavel_id = data.get("responsavel_id")
-        return t
+        tarefa = cls(data["nome"], id=data.get("id"))
+        if data.get("concluida"):
+            tarefa.marcar_concluida()
+        tarefa.atribuir_a(data.get("responsavel_id"))
+        return tarefa
+
+    def descricao(self):
+        return f"Tarefa: {self._nome}"
+
+# Polimorfismo: TarefaUrgente herda Tarefa e sobrescreve descrição
+class TarefaUrgente(Tarefa):
+    def descricao(self):
+        return f"URGENTE! {self._nome}"
