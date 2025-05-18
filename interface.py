@@ -65,19 +65,20 @@ class App(ctk.CTk):
     def distribuir_tarefas_rotativa(self):
         if not self.moradores:
             return  # Sem moradores, nada a fazer
+
         moradores_ids = [m.id for m in self.moradores]
         total_moradores = len(moradores_ids)
 
-        for i, tarefa in enumerate(self.tarefas):
-            if tarefa.responsavel_id in moradores_ids:
-                # Avança para o próximo morador
-                index_atual = moradores_ids.index(tarefa.responsavel_id)
-                novo_index = (index_atual + 1) % total_moradores
-            else:
-                # Distribuição inicial balanceada:
-                novo_index = i % total_moradores
-            tarefa.responsavel_id = moradores_ids[novo_index]
+        # Primeiro, limpa todas as atribuições para garantir exclusividade
+        for tarefa in self.tarefas:
+            tarefa.responsavel_id = None
 
+        # Atribui uma tarefa para cada morador, na ordem das listas
+        for i, morador_id in enumerate(moradores_ids):
+            if i < len(self.tarefas):
+                self.tarefas[i].responsavel_id = morador_id
+            else:
+                break
 
     def construir_aba_moradores(self):
         self.lista_moradores = ctk.CTkScrollableFrame(self.aba_moradores)
@@ -112,6 +113,23 @@ class App(ctk.CTk):
     def construir_aba_agenda(self):
         self.lista_agenda = ctk.CTkScrollableFrame(self.aba_agenda)
         self.lista_agenda.pack(fill="both", expand=True, pady=10)
+
+        hoje = datetime.now().date()
+        inicio_semana = hoje - timedelta(days=hoje.weekday())
+        fim_semana = inicio_semana + timedelta(days=6)         # domingo
+
+        texto_semana = f"Semana atual: {inicio_semana.strftime('%d/%m/%Y')} — {fim_semana.strftime('%d/%m/%Y')}"
+        self.label_semana = ctk.CTkLabel(self.aba_agenda, text=texto_semana, font=ctk.CTkFont(size=14, weight="bold"))
+        self.label_semana.pack(pady=5)
+
+        ctk.CTkButton(self.aba_agenda, text="Redistribuir Tarefas", command=self.botao_redistribuir).pack(pady=5)
+
+        self.atualizar_agenda()
+    
+    def botao_redistribuir(self):
+        self.distribuir_tarefas_rotativa()
+        self.salvar_dados()
+        self.atualizar_lista_tarefas()
         self.atualizar_agenda()
 
     def atualizar_lista_moradores(self):
@@ -166,19 +184,31 @@ class App(ctk.CTk):
         if nome:
             self.moradores.append(Morador(nome))
             self.nome_morador_entry.delete(0, "end")
+            self.distribuir_tarefas_rotativa()  # Redistribui as tarefas com o morador novo
             self.salvar_dados()
             self.atualizar_lista_moradores()
             self.atualizar_lista_tarefas()
             self.atualizar_agenda()
 
+
     def adicionar_tarefa(self):
         nome = self.nome_tarefa_entry.get().strip()
         if nome:
-            self.tarefas.append(Tarefa(nome))
-            self.nome_tarefa_entry.delete(0, "end")
-            self.salvar_dados()
-            self.atualizar_lista_tarefas()
-            self.atualizar_agenda()
+            nova_tarefa = Tarefa(nome)
+            # Atribuir responsável automaticamente se existirem moradores
+            if self.moradores:
+                # Exemplo: atribui ao morador com menos tarefas atualmente
+                morador_com_menos_tarefas = min(
+                    self.moradores,
+                    key=lambda m: sum(1 for t in self.tarefas if t.responsavel_id == m.id)
+                )
+                nova_tarefa.responsavel_id = morador_com_menos_tarefas.id
+        self.tarefas.append(nova_tarefa)
+        self.nome_tarefa_entry.delete(0, "end")
+        self.salvar_dados()
+        self.atualizar_lista_tarefas()
+        self.atualizar_agenda()
+
 
     def remover_morador(self, morador):
         self.moradores.remove(morador)
