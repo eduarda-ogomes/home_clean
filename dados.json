@@ -1,17 +1,39 @@
 {
     "moradores": [
         {
-            "id": "7cc73b24-04a8-4423-8394-5de341fa828a",
-            "nome": "ma",
+            "id": "111ed123-0b07-4e7a-b4d8-5c01e182bd93",
+            "nome": "Maria Eduarda",
+            "tarefas_ids": []
+        },
+        {
+            "id": "446cfbb7-7468-4c44-8c41-307e9f6c277e",
+            "nome": "Rafaela",
+            "tarefas_ids": []
+        },
+        {
+            "id": "90bc003d-61c4-4e3c-8266-8038c2f2565b",
+            "nome": "Carol",
             "tarefas_ids": []
         }
     ],
     "tarefas": [
         {
-            "id": "2b6f974f-2be2-4b40-9f3e-6b8706f4cab9",
-            "nome": "sala",
-            "concluida": true,
-            "responsavel_id": "7cc73b24-04a8-4423-8394-5de341fa828a"
+            "id": "577fd216-8b90-4643-911e-cc620da3abac",
+            "nome": "limpar sala",
+            "concluida": false,
+            "responsavel_id": "111ed123-0b07-4e7a-b4d8-5c01e182bd93"
+        },
+        {
+            "id": "cf81ec37-e743-4fa5-918a-1bc404e48e94",
+            "nome": "limpar banheiro",
+            "concluida": false,
+            "responsavel_id": "446cfbb7-7468-4c44-8c41-307e9f6c277e"
+        },
+        {
+            "id": "10f0802f-600e-49aa-a10d-072b1440ca2a",
+            "nome": "limpar cozinha",
+            "concluida": false,
+            "responsavel_id": "90bc003d-61c4-4e3c-8266-8038c2f2565b"
         }
     ],
     "data_ultima_distribuicao": "2025-05-18T15:19:03.261037"
