@@ -3,8 +3,7 @@ import uuid
 
 class Tarefa(ConcluivelMixin, AtribuivelMixin):
     def __init__(self, nome, id=None):
-        ConcluivelMixin.__init__(self)
-        AtribuivelMixin.__init__(self)
+        super().__init__() # Chama o construtor dos mixins
         self._id = id or str(uuid.uuid4())
         self._nome = nome
 
@@ -39,8 +38,3 @@ class Tarefa(ConcluivelMixin, AtribuivelMixin):
 
     def descricao(self):
         return f"Tarefa: {self._nome}"
-
-# Polimorfismo: TarefaUrgente herda Tarefa e sobrescreve descrição
-class TarefaUrgente(Tarefa):
-    def descricao(self):
-        return f"URGENTE! {self._nome}"

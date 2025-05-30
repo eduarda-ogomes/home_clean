@@ -1,12 +1,9 @@
-from package.modelos.usuario import Usuario
+from package.modelos.pessoa import Pessoa
 
-def test_usuario():
-    usuario = Usuario("João", "joao@email.com", "123")
-    assert usuario.nome == "João"
-    assert usuario.email == "joao@email.com"
-    assert usuario.verificar_senha("123") is True
-    assert usuario.verificar_senha("senhaerrada") is False
+def test_pessoa():
+    pessoa = Pessoa("João")
+    assert pessoa.nome == "João"
     print("Teste da classe Usuario passou com sucesso.")
 
 if __name__ == "__main__":
-    test_usuario()
+    test_pessoa()

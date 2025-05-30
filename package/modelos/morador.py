@@ -2,7 +2,7 @@ from package.modelos.pessoa import Pessoa
 
 class Morador(Pessoa):
     def __init__(self, nome, id=None):
-        super().__init__(nome, id)
+        super().__init__(nome, id) # Chama o construtor da classe base
         self._tarefas = []  # composição forte: Morador "tem" tarefas
 
     def adicionar_tarefa(self, tarefa):
@@ -17,14 +17,8 @@ class Morador(Pessoa):
     def tarefas(self):
         return self._tarefas
 
-    def listar_tarefas_pendentes(self):
-        return [t for t in self._tarefas if not t.concluida]
-
-    def listar_tarefas_concluidas(self):
-        return [t for t in self._tarefas if t.concluida]
-
     def to_dict(self):
-        base = super().to_dict()
+        base = super().to_dict() # Chama o método to_dict da classe base
         # Guardamos só os IDs das tarefas para evitar composição circular no JSON
         base.update({
             "tarefas_ids": [t.id for t in self._tarefas]
@@ -33,6 +27,5 @@ class Morador(Pessoa):
 
     @classmethod
     def from_dict(cls, data):
-        morador = cls(data["nome"], id=data.get("id"))
-        # Tarefas são associadas externamente ao carregar
+        morador = cls(data["nome"], id=data.get("id")) # Cria um Morador a partir de um dicionário
         return morador

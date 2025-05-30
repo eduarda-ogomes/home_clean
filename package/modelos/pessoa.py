@@ -3,7 +3,7 @@ import uuid
 class Pessoa:
     def __init__(self, nome, id=None):
         self._id = id or str(uuid.uuid4())
-        self._nome = nome
+        self.nome = nome
 
     @property
     def id(self):
@@ -15,8 +15,10 @@ class Pessoa:
 
     @nome.setter
     def nome(self, valor):
-        if valor:
-            self._nome = valor
+        valor = valor.strip()
+        if not valor:
+            raise ValueError("Nome não pode ser vazio.")
+        self._nome = valor.title()
 
     def to_dict(self):
         return {
@@ -26,4 +28,4 @@ class Pessoa:
 
     @classmethod
     def from_dict(cls, data):
-        return cls(data["nome"], id=data.get("id"))
+        return cls(data["nome"], id=data.get("id")) # Método de classe para criar instância a partir de dicionário

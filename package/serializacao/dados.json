@@ -1,0 +1,68 @@
+{
+    "moradores": [
+        {
+            "id": "03d850fb-3c49-48ad-880d-d91ffd354ed0",
+            "nome": "Julia",
+            "tarefas_ids": []
+        },
+        {
+            "id": "1f0c1b9d-f3c8-4aa1-b319-dd1bb7fc228c",
+            "nome": "Maria Eduarda",
+            "tarefas_ids": []
+        },
+        {
+            "id": "040ddf5d-adc0-4342-9ba4-26f415a96c78",
+            "nome": "Cibelle",
+            "tarefas_ids": []
+        },
+        {
+            "id": "87355d9b-37a0-4ea9-ab25-1084031160ca",
+            "nome": "Gabriela",
+            "tarefas_ids": []
+        },
+        {
+            "id": "a2b36f4c-3bda-4c10-b9fa-9adcce8fbeb5",
+            "nome": "Maria Fernanda",
+            "tarefas_ids": []
+        }
+    ],
+    "tarefas": [
+        {
+            "id": "ec176a54-3714-4015-b946-8ac31fd0b485",
+            "nome": "Cozinha",
+            "concluida": true,
+            "responsavel_id": "03d850fb-3c49-48ad-880d-d91ffd354ed0"
+        },
+        {
+            "id": "131ccb72-ddc8-4bad-818d-64926ede4ae0",
+            "nome": "Sala",
+            "concluida": false,
+            "responsavel_id": "1f0c1b9d-f3c8-4aa1-b319-dd1bb7fc228c"
+        },
+        {
+            "id": "c371dfa6-1fca-44b5-b40f-ed0b6c9b9beb",
+            "nome": "Bancada",
+            "concluida": false,
+            "responsavel_id": "040ddf5d-adc0-4342-9ba4-26f415a96c78"
+        },
+        {
+            "id": "e6773b46-a2dd-44ca-b848-459d7b6b41f9",
+            "nome": "Lavanderia",
+            "concluida": true,
+            "responsavel_id": "87355d9b-37a0-4ea9-ab25-1084031160ca"
+        },
+        {
+            "id": "f5bc7245-bb30-4fbc-96c6-8352a3218a1c",
+            "nome": "Banheiro",
+            "concluida": false,
+            "responsavel_id": "a2b36f4c-3bda-4c10-b9fa-9adcce8fbeb5"
+        },
+        {
+            "id": "8cf883a7-28ea-4b96-93b5-883a7bad6702",
+            "nome": "Sacada",
+            "concluida": false,
+            "responsavel_id": "03d850fb-3c49-48ad-880d-d91ffd354ed0"
+        }
+    ],
+    "data_ultima_distribuicao": "2025-05-30T13:38:32.745642"
+}
